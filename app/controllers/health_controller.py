@@ -1,0 +1,31 @@
+from fastapi import APIRouter, Depends
+from app.core.redis_client import redis_client
+from app.schemas.health import HealthStatus
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from app.models import Request
+from app.db.session import get_session
+
+router = APIRouter()
+
+@router.get("/health", response_model=HealthStatus)
+async def get_health(session: AsyncSession = Depends(get_session)) -> HealthStatus:
+    result = await session.execute(select(Request).limit(1))
+
+    try:
+        result.scalar_one_or_none()
+        db_status = "healthy"
+    except Exception:
+        db_status = "unhealthy"
+
+    try:
+        pong = await redis_client.ping()
+        redis_status = "healthy" if pong else "unhealthy"
+    except Exception:
+        redis_status = "unhealthy"
+
+    return HealthStatus(
+        app="healthy",
+        redis=redis_status,
+        database=db_status,
+    )

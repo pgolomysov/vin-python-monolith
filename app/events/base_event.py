@@ -1,0 +1,6 @@
+from typing import Protocol, Any
+
+
+class BaseEvent(Protocol):
+    def event_type(self) -> str: ...
+    def payload(self) -> dict[str, Any]: ...

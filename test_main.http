@@ -1,0 +1,29 @@
+###
+
+GET http://127.0.0.1:8000/api/health
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/api/requests
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/api/requests/5018fa62-87cb-47fa-b08e-cafea15fc580
+Accept: application/json
+
+###
+
+POST http://127.0.0.1:8000/api/requests
+Accept: application/json
+Content-Type: application/json
+
+{
+    "vin": "4Y1SL65848Z411439",
+    "email": "john@doe.com"
+}
+
+
+
+###
