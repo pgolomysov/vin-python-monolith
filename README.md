@@ -14,12 +14,15 @@ It's more a technical demonstration rather than a production-ready service (yet)
 ### Technical architecture
 It's a monolithic application with PostgreSQL as DBMS, Redis as event broker. Everything inside docker.
 
-### How to run
+### How to set up
 
 Just run `make init`, which:
 * Build container
 * Run containers
 * Apply migrations
+
+### How to run api
+* For Jetbrains IDE see test_main.http
 
 ### Containers structure:
 * **api** - monolith backend application
@@ -33,9 +36,13 @@ Just run `make init`, which:
 * **requests** - incoming user's requests to find car info by VIN
 * **outbox_relayer** - storage for message outbox pattern for event system
 
+
+![img.png](docs/api_end_event_flow.png)
+
 ### TBD:
 * Redis Lists as message broker. No ack for consumer. Now used for simplicity, should be replace for RabbitMQ (for ex.)
 * Monolithic architecture chosen for simplicity, might be split to microservices
 * Improve event system code
 * Improve logging and alerting
+* RBAC
 * Tests
