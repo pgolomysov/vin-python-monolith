@@ -18,3 +18,11 @@ up:
 .PHONY: build
 build:
 	docker-compose build
+
+.PHONY: api
+api:
+	docker exec -it vin-python-monolith-api-1 bash
+
+.PHONY: logs
+logs:
+	docker exec -it ${CONTAINER} tail -f logs/app.log

@@ -20,6 +20,7 @@ class OutboxRelayerRepository:
             .limit(count)
             .with_for_update(skip_locked=True)
         )
+
         return result.scalars().all()
 
     def mark_consumed(self, model: OutboxRelayer) -> Request | None:

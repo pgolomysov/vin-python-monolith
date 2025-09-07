@@ -2,3 +2,4 @@
 venv/
 ENV/
 env/
+/app/logs/app.log

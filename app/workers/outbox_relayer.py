@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.celery.celery_app import celery_app
 from app.core.config import settings
+from app.core.logging import logger
 from app.core.redis.redis_client import RedisSyncClient
 from app.repositories.outbox_relayer_repository import get_outbox_relayer_repository
 
@@ -19,8 +20,9 @@ def run_outbox_relayer():
         with db_session.begin():
             outbox_relayer_repository = get_outbox_relayer_repository(db_session)
 
-            sys.stdout.flush()
             events = outbox_relayer_repository.get(10)
+
+            logger.info(f"📥 Outbox relayer - found {len(events)} events")
 
             for e in events:
                 payload = json.dumps({
@@ -33,12 +35,14 @@ def run_outbox_relayer():
 
                 if channel is None:
                     #TODO: add DLQ
+                    logger.info(f"❌❌❌ No channel for event found: {str(e.event_type)}, channel - {channel}, with payload: {payload}")
                     raise Exception("No channel for event found")
 
-                print(f"Pushed to channel {channel}: {payload}")
                 redis_client.push_event_to_channel(channel, payload)
 
                 outbox_relayer_repository.mark_consumed(e)
+
+                logger.info(f"🚀 Event dispatched: {str(e.event_type)}, channel - {channel}, with payload: {payload}")
 
         db_session.commit()
         print("Finishing outbox relayer")
