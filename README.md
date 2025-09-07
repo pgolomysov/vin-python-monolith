@@ -45,4 +45,5 @@ Just run `make init`, which:
 * Improve event system code
 * Improve logging and alerting
 * RBAC
+* Sync/async fix
 * Tests

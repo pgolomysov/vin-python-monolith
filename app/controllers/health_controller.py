@@ -4,12 +4,12 @@ from app.schemas.health import HealthStatus
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.models import Request
-from app.db.session import get_session
+from app.db.db_session import get_async_session
 
 router = APIRouter()
 
 @router.get("/health", response_model=HealthStatus)
-async def get_health(session: AsyncSession = Depends(get_session)) -> HealthStatus:
+async def get_health(session: AsyncSession = Depends(get_async_session)) -> HealthStatus:
     try:
         result = await session.execute(select(Request).limit(1))
         result.scalar_one_or_none()

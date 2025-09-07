@@ -3,7 +3,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.session import get_session
+from app.db.db_session import get_async_session
 from app.events.request_created import RequestCreated
 from app.models import Request, Car
 from app.repositories.request_repository import RequestRepository, get_request_repository
@@ -15,9 +15,9 @@ router = APIRouter()
 @router.post("/requests")
 async def create_request(
         request: RequestCreate,
-        db: AsyncSession = Depends(get_session),
+        db: AsyncSession = Depends(get_async_session),
         event_system: EventSystem = Depends(EventSystem),
-        request_repository: RequestRepository = get_request_repository(),
+        request_repository: RequestRepository = Depends(get_request_repository),
 ):
     request_model = request_repository.create(uuid=uuid.uuid4(), email=request.email, vin=request.vin)
     await db.flush()
@@ -36,11 +36,12 @@ async def create_request(
         "request": {
             "vin": request_model.vin,
             "email": request_model.email,
+            "request_id": str(request_model.uuid),
         }
     }
 
 @router.get("/requests")
-async def get_requests(session: AsyncSession = Depends(get_session)):
+async def get_requests(session: AsyncSession = Depends(get_async_session)):
     result = await session.execute(select(Request))
     requests = result.scalars().all()
 
@@ -58,7 +59,7 @@ async def get_requests(session: AsyncSession = Depends(get_session)):
     }
 
 @router.get("/requests/{uuid}")
-async def get_requests(uuid: str, session: AsyncSession = Depends(get_session)):
+async def get_requests(uuid: str, session: AsyncSession = Depends(get_async_session)):
     try:
         stmt = select(Request).where(Request.uuid == uuid)
         result = await session.execute(stmt)

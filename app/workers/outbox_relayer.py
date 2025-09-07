@@ -1,23 +1,24 @@
 import json
-import sys;
+import sys
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.celery.celery_app import celery_app
 from app.core.config import settings
-from app.core.redis_client import RedisClient
+from app.core.redis_client import RedisSyncClient
 from app.repositories.outbox_relayer_repository import get_outbox_relayer_repository
 
 sync_engine = create_engine(settings.alembic_database_url, echo=True, future=True)
 SyncSession = sessionmaker(bind=sync_engine, expire_on_commit=False)
-redis_client = RedisClient
-outbox_relayer_repository = get_outbox_relayer_repository()
+redis_client = RedisSyncClient()
 
 @celery_app.task(name="workers.run_outbox_relayer")
 def run_outbox_relayer():
-    with SyncSession() as session:
-        with session.begin():
+    with SyncSession() as db_session:
+        with db_session.begin():
+            outbox_relayer_repository = get_outbox_relayer_repository(db_session)
+
             sys.stdout.flush()
             events = outbox_relayer_repository.get(10)
 
@@ -39,7 +40,7 @@ def run_outbox_relayer():
 
                 outbox_relayer_repository.mark_consumed(e)
 
-        session.commit()
+        db_session.commit()
         print("Finishing outbox relayer")
 
         return {"processed": len(events)}

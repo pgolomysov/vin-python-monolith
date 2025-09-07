@@ -1,14 +1,13 @@
 import json
+import random
 from datetime import datetime, timezone
 
 from app.celery.celery_app import celery_app
-import redis
-import random
-from app.core.redis_client import RedisClient
+from app.core.redis_client import RedisSyncClient
 from app.events.request_processed import RequestProcessed
 from app.services.event.event_system import EventSystem
 
-redis_client = RedisClient()
+redis_client = RedisSyncClient()
 event_system = EventSystem()
 
 @celery_app.task(name="workers.listen_request_created")

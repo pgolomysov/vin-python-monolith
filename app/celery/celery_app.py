@@ -1,6 +1,7 @@
 from celery import Celery
 
 from app.core.config import settings
+from app import workers
 
 celery_app = Celery("worker")
 
@@ -11,7 +12,9 @@ celery_app.conf.update(
     enable_utc=True,
 )
 
-celery_app.autodiscover_tasks(["app.workers"])
+celery_app.conf.update(
+    imports=["app.workers.outbox_relayer", "app.workers.listen_request_created", "app.workers.listen_request_processed"],
+)
 
 celery_app.conf.beat_schedule = {
     'outbox-relayer': {

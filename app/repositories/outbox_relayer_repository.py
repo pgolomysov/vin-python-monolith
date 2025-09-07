@@ -2,17 +2,18 @@ from datetime import timezone, datetime
 
 from fastapi import Depends
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
-from app.db.session import get_session
+from app.db.db_session import get_sync_session
 from app.models.models import Request, OutboxRelayer
 
+
 class OutboxRelayerRepository:
-    def __init__(self, db: AsyncSession = Depends(get_session)):
+    def __init__(self, db: get_sync_session()):
         self.db = db
 
-    async def get(self, count: int) -> list[OutboxRelayer] | None:
-        result = await self.db.execute(
+    def get(self, count: int) -> list[OutboxRelayer] | None:
+        result = self.db.execute(
             select(OutboxRelayer)
             .where(OutboxRelayer.consumed_at.is_(None))
             .order_by(OutboxRelayer.id.asc())
@@ -21,8 +22,8 @@ class OutboxRelayerRepository:
         )
         return result.scalars().all()
 
-    async def mark_consumed(self, model: OutboxRelayer) -> Request | None:
+    def mark_consumed(self, model: OutboxRelayer) -> Request | None:
         model.consumed_at = datetime.now(timezone.utc)
 
-async def get_outbox_relayer_repository(db: AsyncSession = Depends(get_session)):
+def get_outbox_relayer_repository(db: Session = Depends(get_sync_session)):
     return OutboxRelayerRepository(db)

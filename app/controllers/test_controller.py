@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
-from app.db.session import get_session
+from app.db.db_session import get_async_session
 from app.events.request_processed import RequestProcessed
 from app.models import OutboxRelayer
 from app.models import Request, Car
@@ -18,7 +18,7 @@ router = APIRouter()
 redis_client = redis.Redis.from_url(settings.redis_url, decode_responses=True)
 
 @router.get("/test")
-async def create_request(db: AsyncSession = Depends(get_session)):
+async def create_request(db: AsyncSession = Depends(get_async_session)):
     channel = "request_created"
 
     with SyncSession() as session:
@@ -47,7 +47,7 @@ async def create_request(db: AsyncSession = Depends(get_session)):
 
 
 @router.get("/test2")
-async def create_request(db: AsyncSession = Depends(get_session)):
+async def create_request(db: AsyncSession = Depends(get_async_session)):
     channel = "request_created"
     with SyncSession() as session:
         with session.begin():

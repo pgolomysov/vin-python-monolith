@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.session import get_session
+from app.db.db_session import get_async_session
 from app.models.models import Car
 
 class CarRepository:
@@ -38,5 +38,5 @@ class CarRepository:
 
         return car_record
 
-async def get_car_repository(db: AsyncSession = Depends(get_session)) -> CarRepository:
+def get_car_repository(db: AsyncSession = Depends(get_async_session)):
     return CarRepository(db)
