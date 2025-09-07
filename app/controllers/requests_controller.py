@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_session
 from app.events.request_created import RequestCreated
 from app.models import Request, Car
-from app.repositories.request_repository import RequestRepository
+from app.repositories.request_repository import RequestRepository, get_request_repository
 from app.schemas.requests.request_create import RequestCreate
 from app.services.event.event_system import EventSystem
 
@@ -17,7 +17,7 @@ async def create_request(
         request: RequestCreate,
         db: AsyncSession = Depends(get_session),
         event_system: EventSystem = Depends(EventSystem),
-        request_repository: RequestRepository = Depends(RequestRepository),
+        request_repository: RequestRepository = get_request_repository(),
 ):
     request_model = request_repository.create(uuid=uuid.uuid4(), email=request.email, vin=request.vin)
     await db.flush()

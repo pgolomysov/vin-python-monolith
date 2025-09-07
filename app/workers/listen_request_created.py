@@ -11,7 +11,7 @@ from app.services.event.event_system import EventSystem
 redis_client = RedisClient()
 event_system = EventSystem()
 
-@celery_app.task(name="listen_request_created")
+@celery_app.task(name="workers.listen_request_created")
 def listen_channel():
     messages = redis_client.get_messages_from_channel("request_created", 10)
     print(f"Redis - got {len(messages)} messages")

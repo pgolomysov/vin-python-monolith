@@ -7,9 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_session
 from app.models.models import Car
 
-
 class CarRepository:
-    def __init__(self, db: AsyncSession = Depends(get_session)):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
     async def get_all(self) -> Sequence:
@@ -23,10 +22,11 @@ class CarRepository:
         result = await self.db.execute(
             select(Car).where(Car.vin == vin)
         )
+
         return result.scalar_one_or_none()
 
-    async def update_or_create(self, vin: str, payload: dict or None) -> None:
-        car_record = self.get_by_vin(vin)
+    async def update_or_create(self, vin: str, payload: dict) -> Car:
+        car_record = await self.get_by_vin(vin)
 
         if car_record:
             car_record.data = payload
@@ -35,3 +35,8 @@ class CarRepository:
             car_record.vin = vin
             car_record.data = payload
             self.db.add(car_record)
+
+        return car_record
+
+async def get_car_repository(db: AsyncSession = Depends(get_session)) -> CarRepository:
+    return CarRepository(db)

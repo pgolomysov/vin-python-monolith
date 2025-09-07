@@ -5,7 +5,6 @@ from sqlalchemy import select
 from app.models.models import Request
 from app.db.session import get_session
 
-
 class RequestRepository:
     def __init__(self, db: AsyncSession = Depends(get_session)):
         self.db = db
@@ -24,3 +23,6 @@ class RequestRepository:
 
     async def mark_as_done(self, record: Request) -> Request | None:
         record.done = True
+
+async def get_request_repository(db: AsyncSession = Depends(get_session)):
+    return RequestRepository(db)

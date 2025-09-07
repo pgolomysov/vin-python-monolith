@@ -10,9 +10,8 @@ router = APIRouter()
 
 @router.get("/health", response_model=HealthStatus)
 async def get_health(session: AsyncSession = Depends(get_session)) -> HealthStatus:
-    result = await session.execute(select(Request).limit(1))
-
     try:
+        result = await session.execute(select(Request).limit(1))
         result.scalar_one_or_none()
         db_status = "healthy"
     except Exception:

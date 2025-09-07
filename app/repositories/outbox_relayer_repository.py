@@ -1,14 +1,11 @@
 from datetime import timezone, datetime
 
 from fastapi import Depends
-from pydantic import UUID4
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.events.base_event import BaseEvent
-from app.models.models import Request, OutboxRelayer
 from app.db.session import get_session
-
+from app.models.models import Request, OutboxRelayer
 
 class OutboxRelayerRepository:
     def __init__(self, db: AsyncSession = Depends(get_session)):
@@ -26,3 +23,6 @@ class OutboxRelayerRepository:
 
     async def mark_consumed(self, model: OutboxRelayer) -> Request | None:
         model.consumed_at = datetime.now(timezone.utc)
+
+async def get_outbox_relayer_repository(db: AsyncSession = Depends(get_session)):
+    return OutboxRelayerRepository(db)

@@ -1,13 +1,13 @@
 from app.celery.celery_app import celery_app
 from app.core.redis_client import redis_client
 from app.repositories.car_repository import CarRepository
-from app.repositories.request_repository import RequestRepository
+from app.repositories.request_repository import get_request_repository
 from app.workers.outbox_relayer import SyncSession
 
-request_repository = RequestRepository()
+request_repository = get_request_repository()
 car_repository = CarRepository()
 
-@celery_app.task(name="listen_request_processed")
+@celery_app.task(name="workers.listen_request_processed")
 def listen_channel():
     with SyncSession() as session:
         with session.begin():
