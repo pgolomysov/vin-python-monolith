@@ -3,12 +3,12 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.db_session import get_async_session
+from app.core.db.db_session import get_async_session
 from app.events.request_created import RequestCreated
 from app.models import Request, Car
 from app.repositories.request_repository import RequestRepository, get_request_repository
 from app.schemas.requests.request_create import RequestCreate
-from app.services.event.event_system import EventSystem
+from app.services.event.event_service import EventService
 
 router = APIRouter()
 
@@ -16,7 +16,7 @@ router = APIRouter()
 async def create_request(
         request: RequestCreate,
         db: AsyncSession = Depends(get_async_session),
-        event_system: EventSystem = Depends(EventSystem),
+        event_service: EventService = Depends(EventService),
         request_repository: RequestRepository = Depends(get_request_repository),
 ):
     request_model = request_repository.create(uuid=uuid.uuid4(), email=request.email, vin=request.vin)
@@ -30,7 +30,7 @@ async def create_request(
         "created_at": str(request_model.created_at),
     })
 
-    await event_system.dispatch(event)
+    await event_service.dispatch(event)
 
     return {
         "request": {

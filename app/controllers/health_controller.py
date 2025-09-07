@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
-from app.core.redis_client import redis_client
+from app.core.redis.redis_client import redis_client
 from app.schemas.health import HealthStatus
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.models import Request
-from app.db.db_session import get_async_session
+from app.core.db.db_session import get_async_session
 
 router = APIRouter()
 

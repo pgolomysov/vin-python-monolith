@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.db.db_session import get_sync_session
+from app.core.db.db_session import get_sync_session
 from app.models.models import Request, OutboxRelayer
 
 

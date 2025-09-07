@@ -3,7 +3,7 @@ from pydantic import UUID4
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.models.models import Request
-from app.db.db_session import get_async_session
+from app.core.db.db_session import get_async_session
 
 class RequestRepository:
     def __init__(self, db: AsyncSession):

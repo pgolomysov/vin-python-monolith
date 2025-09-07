@@ -3,10 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import OutboxRelayer
 from app.events import base_event
-from app.db.db_session import get_async_session
+from app.core.db.db_session import get_async_session
 
 
-class EventSystem:
+class EventService:
     def __init__(self, db: AsyncSession = Depends(get_async_session)):
         self.db = db
 

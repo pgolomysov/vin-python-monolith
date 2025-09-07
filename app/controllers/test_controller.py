@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
-from app.db.db_session import get_async_session
+from app.core.db.db_session import get_async_session
 from app.events.request_processed import RequestProcessed
 from app.models import OutboxRelayer
 from app.models import Request, Car

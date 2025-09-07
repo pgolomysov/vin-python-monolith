@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.db_session import get_async_session
+from app.core.db.db_session import get_async_session
 from app.models.models import Car
 
 class CarRepository:

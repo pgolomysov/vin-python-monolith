@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.celery.celery_app import celery_app
 from app.core.config import settings
-from app.core.redis_client import RedisSyncClient
+from app.core.redis.redis_client import RedisSyncClient
 from app.repositories.outbox_relayer_repository import get_outbox_relayer_repository
 
 sync_engine = create_engine(settings.alembic_database_url, echo=True, future=True)

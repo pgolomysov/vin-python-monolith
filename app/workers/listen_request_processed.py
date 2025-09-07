@@ -1,5 +1,5 @@
 from app.celery.celery_app import celery_app
-from app.core.redis_client import RedisSyncClient
+from app.core.redis.redis_client import RedisSyncClient
 from app.repositories.car_repository import get_car_repository
 from app.repositories.request_repository import get_request_repository
 from app.workers.outbox_relayer import SyncSession
