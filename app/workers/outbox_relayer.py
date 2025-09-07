@@ -1,5 +1,4 @@
 import json
-import sys
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -7,18 +6,18 @@ from sqlalchemy.orm import sessionmaker
 from app.celery.celery_app import celery_app
 from app.core.config import settings
 from app.core.logging import logger
-from app.core.redis.redis_client import RedisSyncClient
 from app.repositories.outbox_relayer_repository import get_outbox_relayer_repository
+from app.services.event.event_service import get_sync_event_service
 
 sync_engine = create_engine(settings.alembic_database_url, echo=True, future=True)
 SyncSession = sessionmaker(bind=sync_engine, expire_on_commit=False)
-redis_client = RedisSyncClient()
 
 @celery_app.task(name="workers.run_outbox_relayer")
 def run_outbox_relayer():
     with SyncSession() as db_session:
         with db_session.begin():
             outbox_relayer_repository = get_outbox_relayer_repository(db_session)
+            event_service = get_sync_event_service(db_session)
 
             events = outbox_relayer_repository.get(10)
 
@@ -38,7 +37,7 @@ def run_outbox_relayer():
                     logger.info(f"❌❌❌ No channel for event found: {str(e.event_type)}, channel - {channel}, with payload: {payload}")
                     raise Exception("No channel for event found")
 
-                redis_client.push_event_to_channel(channel, payload)
+                event_service.push_to_channel(channel, payload)
 
                 outbox_relayer_repository.mark_consumed(e)
 

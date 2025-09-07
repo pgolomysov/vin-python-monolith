@@ -10,6 +10,7 @@ celery_app.conf.update(
     result_backend=settings.redis_url,
     timezone="UTC",
     enable_utc=True,
+    worker_hijack_root_logger=False,
 )
 
 celery_app.conf.update(

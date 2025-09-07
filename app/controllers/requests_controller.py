@@ -8,7 +8,7 @@ from app.events.request_created import RequestCreated
 from app.models import Request, Car
 from app.repositories.request_repository import RequestRepository, get_request_repository
 from app.schemas.requests.request_create import RequestCreate
-from app.services.event.event_service import EventService
+from app.services.event.event_service import EventServiceAsync, get_async_event_service
 
 router = APIRouter()
 
@@ -16,7 +16,7 @@ router = APIRouter()
 async def create_request(
         request: RequestCreate,
         db: AsyncSession = Depends(get_async_session),
-        event_service: EventService = Depends(EventService),
+        event_service: EventServiceAsync = Depends(get_async_event_service),
         request_repository: RequestRepository = Depends(get_request_repository),
 ):
     request_model = request_repository.create(uuid=uuid.uuid4(), email=request.email, vin=request.vin)
@@ -41,8 +41,8 @@ async def create_request(
     }
 
 @router.get("/requests")
-async def get_requests(session: AsyncSession = Depends(get_async_session)):
-    result = await session.execute(select(Request))
+async def get_requests(db: AsyncSession = Depends(get_async_session)):
+    result = await db.execute(select(Request))
     requests = result.scalars().all()
 
     return {
@@ -59,17 +59,17 @@ async def get_requests(session: AsyncSession = Depends(get_async_session)):
     }
 
 @router.get("/requests/{uuid}")
-async def get_requests(uuid: str, session: AsyncSession = Depends(get_async_session)):
+async def get_requests(uuid: str, db: AsyncSession = Depends(get_async_session)):
     try:
         stmt = select(Request).where(Request.uuid == uuid)
-        result = await session.execute(stmt)
+        result = await db.execute(stmt)
         request = result.scalars().one_or_none()
     except Exception:
         raise HTTPException(status_code=404, detail="Request not found")
 
     if request and request.done is True:
         stmt = select(Car).where(Car.vin == request.vin)
-        result = await session.execute(stmt)
+        result = await db.execute(stmt)
         car = result.scalars().one_or_none()
 
         return car.data

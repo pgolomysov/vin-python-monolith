@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.core.redis.redis_client import redis_client
+from app.core.redis.redis_client import redis_sync_client
 from app.schemas.health import HealthStatus
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -18,7 +18,7 @@ async def get_health(session: AsyncSession = Depends(get_async_session)) -> Heal
         db_status = "unhealthy"
 
     try:
-        pong = await redis_client.ping()
+        pong = await redis_sync_client.ping()
         redis_status = "healthy" if pong else "unhealthy"
     except Exception:
         redis_status = "unhealthy"
