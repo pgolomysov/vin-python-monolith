@@ -8,8 +8,8 @@ class Settings(BaseSettings):
     debug: bool = False
     event_map: dict = {
         #event:channel
-        "public.request_created": "request_created",
-        "public.request_processed": "request_processed"
+        "request_created": "request_created",
+        "request_processed": "request_processed"
     }
 
     class Config:

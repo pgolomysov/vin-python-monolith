@@ -7,7 +7,7 @@ class RequestProcessed(BaseEvent):
         self._payload = payload or {}
 
     def event_type(self) -> str:
-        return "public.request_processed"
+        return "request_processed"
 
     def payload(self) -> dict[str, Any]:
         return self._payload

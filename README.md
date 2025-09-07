@@ -42,7 +42,7 @@ Just run `make init`, which:
 ### TBD:
 * Redis Lists as message broker. No ack for consumer. Now used for simplicity, should be replace for RabbitMQ (for ex.)
 * Monolithic architecture chosen for simplicity, might be split to microservices
-* Improve event system code
+* Improve event system design
 * Improve logging and alerting
 * RBAC
 * Sync/async fix

@@ -13,7 +13,7 @@ Content-Type: application/json
 ###
 # Get request by UUID
 
-GET http://127.0.0.1:8000/api/requests/5018fa62-87cb-47fa-b08e-cafea15fc580
+GET http://127.0.0.1:8000/api/requests/aecc3309-4eb0-4cc1-814c-71941403c6b8
 Accept: application/json
 
 
