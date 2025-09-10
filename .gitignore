@@ -3,3 +3,10 @@ venv/
 ENV/
 env/
 /app/logs/app.log
+__pycache__/
+*.py[cod]
+*$py.class
+logs/
+.idea/
+.DS_Store
+celerybeat-schedule

@@ -13,6 +13,7 @@ It's more a technical demonstration rather than a production-ready service (yet)
 
 ### Technical architecture
 It's a monolithic application with PostgreSQL as DBMS, Redis as event broker. Everything inside docker.
+Async services for FastAPI, sync - for Celery
 
 ### How to set up
 
@@ -22,13 +23,14 @@ Just run `make init`, which:
 * Apply migrations
 
 ### How to run api
-* For Jetbrains IDE see test_main.http
+* For Jetbrains IDE see [test_main.http](test_main.http)
+* For Postman see [docs/postman_collection.json](docs/postman_collection.json)
 
 ### Containers structure:
 * **api** - monolith backend application
 * **worker** - celery worker (all tasks under one roof)
 * **redis** - used as message broker in addition to message outbox pattern
-* postgres - DB
+* **postgres** - DB
 
 ### Tables structure:
 * **alembic_version** - migrations
@@ -40,10 +42,10 @@ Just run `make init`, which:
 ![img.png](docs/api_end_event_flow.png)
 
 ### TBD:
-* Redis Lists as message broker. No ack for consumer. Now used for simplicity, should be replace for RabbitMQ (for ex.)
+* Redis Lists as message broker. No ack for consumer. Now used for simplicity, should be replaced with RabbitMQ (for ex.)
 * Monolithic architecture chosen for simplicity, might be split to microservices
 * Improve event system design
 * Improve logging and alerting
-* RBAC
-* Sync/async fix
+* Auth for users
+* Frontend
 * Tests

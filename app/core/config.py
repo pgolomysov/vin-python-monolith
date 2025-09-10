@@ -1,4 +1,7 @@
-from pydantic_settings import BaseSettings
+import os
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
     database_url: str
@@ -11,8 +14,9 @@ class Settings(BaseSettings):
         "request_created": "request_created",
         "request_processed": "request_processed"
     }
-
-    class Config:
-        env_file = ".env"
+    model_config = SettingsConfigDict(
+        env_file=".env.test" if os.getenv("PYTEST_CURRENT_TEST") else ".env",
+        env_file_encoding="utf-8",
+    )
 
 settings = Settings()

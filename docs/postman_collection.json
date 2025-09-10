@@ -1,0 +1,79 @@
+{
+  "info": {
+    "name": "Local API Requests",
+    "_postman_id": "8d34e2f0-3b5c-4b1f-9c72-7a4b9b56c001",
+    "description": "Collection of example API requests for local server",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Post new request",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"vin\": \"4Y1SL65848Z411439\",\n    \"email\": \"john@doe.com\"\n}"
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/requests",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "requests"]
+        }
+      }
+    },
+    {
+      "name": "Get request by UUID",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/requests/aecc3309-4eb0-4cc1-814c-71941403c6b8",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "requests", "aecc3309-4eb0-4cc1-814c-71941403c6b8"]
+        }
+      }
+    },
+    {
+      "name": "Get all requests",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/requests",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "requests"]
+        }
+      }
+    },
+    {
+      "name": "Health check",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/health",
+          "protocol": "http",
+          "host": ["127.0.0.1"],
+          "port": "8000",
+          "path": ["api", "health"]
+        }
+      }
+    }
+  ]
+}

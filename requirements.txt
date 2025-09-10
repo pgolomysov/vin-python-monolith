@@ -38,6 +38,5 @@ isort>=5.12.0
 flake8>=6.0.0
 mypy>=1.5.0
 
-
 # File handling (for your file_service)
 pathlib2>=2.3.7; python_version < "3.4"

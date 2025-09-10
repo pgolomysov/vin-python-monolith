@@ -13,7 +13,7 @@ class Request(Base):
     __tablename__ = "requests"
 
     uuid: Mapped[UUID] = mapped_column(primary_key=True)
-    vin: Mapped[str] = mapped_column(String(17), unique=True)
+    vin: Mapped[str] = mapped_column(String(17))
     email: Mapped[str] = mapped_column(String)
     done: Mapped[bool] = mapped_column(Boolean, server_default="0")
     created_at: Mapped[datetime] = mapped_column(

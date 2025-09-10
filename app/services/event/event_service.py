@@ -48,5 +48,5 @@ class EventServiceSync:
 def get_async_event_service(db: Session = Depends(get_async_session)) -> EventServiceAsync:
     return EventServiceAsync(db)
 
-def get_sync_event_service(db: Session = Depends(get_sync_session)) -> EventServiceAsync:
+def get_sync_event_service(db: Session = Depends(get_sync_session)) -> EventServiceSync:
     return EventServiceSync(db)
